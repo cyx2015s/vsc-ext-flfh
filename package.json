@@ -3,7 +3,7 @@
   "displayName": "Factorio Locale Format Helper",
   "description": "A VS Code extension for updating Factorio localization files.",
   "version": "0.1.0",
-  "publisher": "pending",
+  "publisher": "tanvec",
   "engines": {
     "vscode": "^1.98.0"
   },
@@ -14,7 +14,9 @@
   "keywords": [
     "factorio",
     "localization",
+    "locale",
     "cfg",
+    "l10n",
     "i18n"
   ],
   "icon": "images/icon.png",
@@ -23,12 +25,13 @@
     "theme": "dark"
   },
   "main": "./extension.js",
+  "activationEvents": [],
   "contributes": {
     "commands": [
       {
         "command": "factorio-locale-format-helper.updateKeysFromSource",
-        "title": "Factorio: Update Localization Keys",
-        "category": "Factorio"
+        "title": "Update Localization Keys",
+        "category": "FLFH"
       }
     ]
   },
