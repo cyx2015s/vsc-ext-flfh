@@ -19,7 +19,9 @@ const parseCfgFileData = async (filePath) => {
             currentSection = line.slice(1, -1); // get section name
             result.set(currentSection, result.get(currentSection) || new Map());
         } else if (line.includes('=')) {
-            const [key, value] = line.split('='); // factorio does not support spaces in key names
+            // factorio does not support spaces in key names
+            const [key, ...valueParts] = line.split('=');
+            const value = valueParts.join('=');
             result.get(currentSection).set(key, value);
         } else {
             throw new Error(`Invalid line format: ${line}`);
