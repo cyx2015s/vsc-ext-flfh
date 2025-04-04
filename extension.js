@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = require('vscode');
+const { updateCfgFile } = require('./utils/update-cfg.js');
 
 
 async function quickPickCfgFiles() {
@@ -34,21 +35,13 @@ function activate(context) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "factorio-locale-format-helper" is now active!');
+	console.log('"factorio-locale-format-helper" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with  registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('factorio-locale-format-helper.helloWorld', function () {
-		// The code you place here will be executed every time your command is executed
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from factorio-locale-format-helper!');
-	});
-
-	context.subscriptions.push(disposable);
-
-	disposable = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async function () {
+	const disposable = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async function () {
 		try {
 
 			const sourceFile = await quickPickCfgFiles();
@@ -60,12 +53,14 @@ function activate(context) {
 				vscode.window.showErrorMessage('Source and target files cannot be the same.');
 				return;
 			}
-			// Below are dummy logics. Intended function is not as the code describes.
-			const sourceContent = await vscode.workspace.fs.readFile(sourceFile);
-			const edit = new vscode.WorkspaceEdit();
-			edit.insert(targetFile, new vscode.Position(Number.MAX_SAFE_INTEGER, 0), "\n" + sourceContent.toString());
-			await vscode.workspace.applyEdit(edit);
-			vscode.window.showInformationMessage('Source content appended to target file successfully!');
+			updateCfgFile(sourceFile.fsPath, targetFile.fsPath).then((success) => {
+				if (success) {
+					vscode.window.showInformationMessage('Target file updated successfully!');
+				} else {
+					vscode.window.showErrorMessage('Failed to update target file.');
+				}
+			})
+
 		} catch (error) {
 			vscode.window.showErrorMessage(`Error: ${error.message}`);
 		}

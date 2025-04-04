@@ -1,5 +1,4 @@
 const fs = require('fs').promises;
-const vscode = require('vscode');
 
 
 /**
@@ -7,34 +6,45 @@ const vscode = require('vscode');
  * @param {string} filePath - The path to the configuration file to be parsed.
  * @returns {Promise<Map>} - A promise that resolves to an object representing the parsed configuration.
  */
-const parseCfgFile = async function (filePath) {
-    const data = await fs.readFile(filePath, 'utf8');
-    const lines = data.split('\n');
-    for (let i = 0; i < lines.length; i++) {
-        lines[i] = lines[i].trim();
-    }
-    const result = new Map(); // Initialize an empty Map to store the parsed data
-    result.set("", new Map()); // Initialize the default section
-    let currentSection = ""; // Initialize currentSection to an empty string (Default section)
-    for (const line of lines) {
-        if (line.startsWith('#') || line.startsWith(';')) {
-            // Skip comments
-            continue;
-        } else if (line.trim() === '') {
-            // Skip empty lines
-            continue;
-        } else if (line.startsWith('[') && line.endsWith(']')) {
-            currentSection = line.slice(1, -1).trim();
-            result.set(currentSection, new Map()); // Initialize a new section
-        } else if (line.includes('=')) {
-            const [key, value] = line.split('=');
-            result.get(currentSection).set(key, value); // Add key-value pair to the current section
+const parseCfgFileData = async (filePath) => {
+    const content = await fs.readFile(filePath, 'utf8');
+    const result = new Map([["", new Map()]]); // Initialize with an empty section
 
+    let currentSection = "";
+    content.split('\n').forEach(line => {
+        line = line.trim(); // remove \n and spaces
+        if (!line || line.startsWith('#') || line.startsWith(';')) return; // skip empty lines and comments
+
+        if (/^\[.*\]$/.test(line)) {
+            currentSection = line.slice(1, -1); // get section name
+            result.set(currentSection, result.get(currentSection) || new Map());
+        } else if (line.includes('=')) {
+            const [key, value] = line.split('='); // factorio does not support spaces in key names
+            result.get(currentSection).set(key, value);
         } else {
-            vscode.window.showErrorMessage(`Invalid line format: ${line}`);
+            throw new Error(`Invalid line format: ${line}`);
         }
-    }
+    });
     return result;
 }
 
-module.exports = { parseCfgFile };
+const parseCfgFileComments = async (filePath) => {
+    const content = await fs.readFile(filePath, 'utf8');
+    const result = new Map([["", []]]); // Initialize with an empty section
+
+    let currentSection = "";
+    content.split('\n').forEach(line => {
+        line = line.trim(); // remove \n and spaces
+        if (/^\[.*\]$/.test(line)) {
+            currentSection = line.slice(1, -1); // get section name
+            result.set(currentSection, result.get(currentSection) || []);
+        }
+        if (line.startsWith('#') || line.startsWith(';')) {
+            const cleanedComment = line.slice(1).trim(); // remove prefix and trim whitespaces
+            result.get(currentSection).push(cleanedComment); // add cleaned comment to the current section
+        }
+    });
+    return result;
+}
+
+module.exports = { parseCfgFileData, parseCfgFileComments };
