@@ -1,28 +1,47 @@
 {
   "name": "factorio-locale-format-helper",
-  "displayName": "factorio-locale-format-helper",
-  "description": "",
-  "version": "0.0.1",
+  "displayName": "Factorio Locale Format Helper",
+  "description": "A VS Code extension for updating Factorio localization files.",
+  "version": "0.1.0",
+  "publisher": "pending",
   "engines": {
     "vscode": "^1.98.0"
   },
   "categories": [
-    "Other"
+    "Formatters",
+    "Programming Languages"
   ],
-  "activationEvents": [],
+  "keywords": [
+    "factorio",
+    "localization",
+    "cfg",
+    "i18n"
+  ],
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#2B2D42",
+    "theme": "dark"
+  },
   "main": "./extension.js",
   "contributes": {
     "commands": [
       {
         "command": "factorio-locale-format-helper.updateKeysFromSource",
-        "title": "Update Keys From Source"
+        "title": "Factorio: Update Localization Keys",
+        "category": "Factorio"
       }
     ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cyx2015s/vsc-ext-flfh"
   },
   "scripts": {
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/vscode": "^1.98.0",
@@ -30,6 +49,14 @@
     "@types/node": "20.x",
     "eslint": "^9.23.0",
     "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1"
-  }
+    "@vscode/test-electron": "^2.4.1",
+    "vsce": "^2.15.0"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/VS%20Code-v1.98+-blue.svg",
+      "href": "https://code.visualstudio.com",
+      "description": "Visual Studio Code Version"
+    }
+  ]
 }
