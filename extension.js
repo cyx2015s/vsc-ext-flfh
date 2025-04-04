@@ -4,7 +4,7 @@ const vscode = require('vscode');
 const { updateCfgFile } = require('./utils/update-cfg.js');
 
 
-async function quickPickCfgFiles() {
+async function quickPickCfgFiles(placeHolder = 'Select a .cfg file') {
 	const files = await vscode.workspace.findFiles('**/*.cfg');
 	if (files.length === 0) {
 		vscode.window.showInformationMessage('No .cfg files found in the workspace.');
@@ -18,7 +18,7 @@ async function quickPickCfgFiles() {
 	}));
 
 	const selected = await vscode.window.showQuickPick(items, {
-		placeHolder: 'Select a .cfg file',
+		placeHolder: placeHolder,
 		canPickMany: false
 	});
 
@@ -44,9 +44,13 @@ function activate(context) {
 	const disposable = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async function () {
 		try {
 
-			const sourceFile = await quickPickCfgFiles();
-			const targetFile = await quickPickCfgFiles();
-			if (!sourceFile || !targetFile) {
+			const sourceFile = await quickPickCfgFiles("Select the source .cfg file (Usually the one under locale/en/)");
+			if (!sourceFile) {
+				return;
+			}
+			vscode.window.showInformationMessage(`Selected source file: ${sourceFile.fsPath}`);
+			const targetFile = await quickPickCfgFiles(`Select the target .cfg file (The language you want to translate to)`);
+			if (!targetFile) {
 				return;
 			}
 			if (sourceFile.fsPath === targetFile.fsPath) {
@@ -55,9 +59,9 @@ function activate(context) {
 			}
 			updateCfgFile(sourceFile.fsPath, targetFile.fsPath).then((success) => {
 				if (success) {
-					vscode.window.showInformationMessage('Target file updated successfully!');
+					vscode.window.showInformationMessage(`Target file ${targetFile.fsPath} updated successfully!`);
 				} else {
-					vscode.window.showErrorMessage('Failed to update target file.');
+					vscode.window.showErrorMessage(`Failed to update target file ${targetFile.fsPath}.`);
 				}
 			})
 

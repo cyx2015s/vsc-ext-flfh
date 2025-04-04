@@ -1,15 +1,14 @@
 {
   "name": "factorio-locale-format-helper",
   "displayName": "Factorio Locale Format Helper",
-  "description": "A VS Code extension for updating Factorio localization files.",
+  "description": "A tool to update translation keys from source file.",
   "version": "0.1.0",
   "publisher": "tanvec",
   "engines": {
     "vscode": "^1.98.0"
   },
   "categories": [
-    "Formatters",
-    "Programming Languages"
+    "Other"
   ],
   "keywords": [
     "factorio",

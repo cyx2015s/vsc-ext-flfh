@@ -71,7 +71,6 @@ const updateCfgFile = async function (sourceFilePath, targetFilePath) {
             }
         }
         // Write the new content to the target cfg file
-        console.log(newTargetFileContent);
         let edit = new vscode.WorkspaceEdit();
         const targetUri = vscode.Uri.file(targetFilePath);
         edit.delete(targetUri, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)));
