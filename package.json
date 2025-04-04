@@ -14,10 +14,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "factorio-locale-format-helper.helloWorld",
-        "title": "Hello World"
-      },
-      {
         "command": "factorio-locale-format-helper.updateKeysFromSource",
         "title": "Update Keys From Source"
       }
