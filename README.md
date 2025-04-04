@@ -1,5 +1,3 @@
-# factorio-locale-format-helper README
-
 ## Commands
 
 ### Update Localization Keys

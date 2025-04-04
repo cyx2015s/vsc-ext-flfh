@@ -2,3 +2,4 @@ node_modules
 .vscode-test/
 *.vsix
 .secret
+vsc-extension-quickstart.md
