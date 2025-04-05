@@ -2,7 +2,7 @@
   "name": "factorio-locale-format-helper",
   "displayName": "Factorio Locale Format Helper",
   "description": "A tool to update translation keys from source file.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "tanvec",
   "engines": {
     "vscode": "^1.98.0"
