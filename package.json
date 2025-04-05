@@ -2,7 +2,7 @@
   "name": "factorio-locale-format-helper",
   "displayName": "Factorio Locale Format Helper",
   "description": "A tool to update translation keys from source file.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "tanvec",
   "engines": {
     "vscode": "^1.98.0"
@@ -39,8 +39,11 @@
     "url": "https://github.com/cyx2015s/vsc-ext-flfh"
   },
   "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
     "test": "vscode-test",
     "package": "vsce package",
     "publish": "vsce publish"

@@ -6,4 +6,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+### Changed
+
+- Rewrote with TypeScript
+
+## [0.1.0] - 2025-04-04
 - Initial release
