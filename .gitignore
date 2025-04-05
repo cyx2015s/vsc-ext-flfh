@@ -3,3 +3,4 @@ node_modules
 *.vsix
 .secret
 vsc-extension-quickstart.md
+TODO.md

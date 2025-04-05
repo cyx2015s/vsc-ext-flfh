@@ -23,7 +23,7 @@
     "color": "#2B2D42",
     "theme": "dark"
   },
-  "main": "./extension.js",
+  "main": "./src/extension.js",
   "activationEvents": [],
   "contributes": {
     "commands": [
