@@ -12,6 +12,7 @@
 
 - The structure of the original file will be preserved when updating the keys in the target file, i.e. the comments and empty lines.
 - Added a button at the status bar, to choose a source file and update the current editing file.
+- Allow to discard existing comments in the target file.
 
 ## [0.2.0] - 2025-04-05
 

@@ -36,6 +36,8 @@ const formatLine = (key: string, value: string, isComment: boolean): string =>
  */
 export const updateCfgFile = async (sourceFilePath: string, targetFilePath: string): Promise<boolean> => {
     try {
+        const config = vscode.workspace.getConfiguration('factorio-locale-format-helper');
+        const discardCommentsInTarget = config.get<boolean>('discardCommentsInTarget', false);
         const sourceData = await parseCfgFileData(sourceFilePath);
         const targetData = await parseCfgFileData(targetFilePath);
         const sourceComments = await parseCfgFileComments(sourceFilePath);
@@ -76,7 +78,7 @@ export const updateCfgFile = async (sourceFilePath: string, targetFilePath: stri
                 }
 
             } else {
-                for (const [key, value] of targetData.get(section)!.entries()) {
+                for (const [key, value] of (targetData.get(section)?.entries() || [])) {
                     if (!sourceData.get(section)!.has(key)) {
                         // It is a key that is not in the source file
                         // Add it in commented form
@@ -84,8 +86,11 @@ export const updateCfgFile = async (sourceFilePath: string, targetFilePath: stri
                     }
                 }
             }
-            for (const comment of targetComments.get(section)!) {
+            // Add comments from the target file 
+            if (!discardCommentsInTarget) {
+                for (const comment of (targetComments.get(section) || [])) {
                 newTargetFileContentMap.get(section)?.push(`#${comment}`);
+            }
             }
         }
         let newTargetFileContent: string[] = []
