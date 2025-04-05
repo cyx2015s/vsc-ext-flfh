@@ -1,10 +1,29 @@
-const assert = require('assert');
-const fs = require('fs').promises;
-const path = require('path');
-const { updateCfgFile } = require('../utils/update-cfg.js');
+import * as assert from 'assert';
+import { promises as fs } from 'fs';
+import * as path from 'path';
+import { updateCfgFile } from '../utils/update-cfg';
+
+interface TestCase {
+    sourceContent: string;
+    targetContent: string;
+    expectedContent: string;
+}
 
 suite('updateCfgFile Tests', () => {
-    let sourceFilePath, targetFilePath;
+    let sourceFilePath: string, targetFilePath: string;
+
+    const testCases: TestCase[] = [
+        {
+            sourceContent: `key1=Key1`,
+            targetContent: `key1=键1`,
+            expectedContent: `key1=键1`
+        },
+        {
+            sourceContent: `key1=Key1\nkey2=Key2\nkey3=Key3\nkey4=Key4\nkey5=Key5`,
+            targetContent: `key1=键1\nkey3=键3\nkey2=键2`,
+            expectedContent: `key1=键1\nkey2=键2\nkey3=键3\nkey4=Key4\nkey5=Key5`
+        }
+    ];
 
     setup(async () => {
         // Create temporary files for testing
@@ -22,42 +41,15 @@ suite('updateCfgFile Tests', () => {
         }
     });
 
-    test('base test', async () => {
-        const sourceContent = `key1=Key1`; // Fill with source file content
-        const targetContent = `key1=键1`; // Fill with target file content
-        const expectedContent = `key1=键1`; // Fill with expected target file content
+    testCases.forEach((testCase, index) => {
+        test(`Test case ${index + 1}`, async () => {
+            await fs.writeFile(sourceFilePath, testCase.sourceContent);
+            await fs.writeFile(targetFilePath, testCase.targetContent);
 
-        await fs.writeFile(sourceFilePath, sourceContent);
-        await fs.writeFile(targetFilePath, targetContent);
+            await updateCfgFile(sourceFilePath, targetFilePath);
 
-        await updateCfgFile(sourceFilePath, targetFilePath);
-
-        const result = await fs.readFile(targetFilePath, 'utf8');
-        assert.strictEqual(result.trim(), expectedContent.trim());
-    });
-
-    test('should arange target file keys in order of source file keys', async () => {
-        const sourceContent =
-            `key1=Key1
-key2=Key2
-key3=Key3
-key4=Key4
-key5=Key5`; // Fill with source file content
-        const targetContent = `key1=键1
-key3=键3
-key2=键2`; // Fill with target file content
-        const expectedContent = `key1=键1
-key2=键2
-key3=键3
-key4=Key4
-key5=Key5`; // Fill with expected target file content
-
-        await fs.writeFile(sourceFilePath, sourceContent);
-        await fs.writeFile(targetFilePath, targetContent);
-
-        await updateCfgFile(sourceFilePath, targetFilePath);
-
-        const result = await fs.readFile(targetFilePath, 'utf8');
-        assert.strictEqual(result.trim(), expectedContent.trim());
+            const result = await fs.readFile(targetFilePath, 'utf8');
+            assert.strictEqual(result.trim(), testCase.expectedContent.trim());
+        });
     });
 });

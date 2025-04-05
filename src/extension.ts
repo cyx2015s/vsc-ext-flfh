@@ -1,10 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-const vscode = require('vscode');
-const { updateCfgFile } = require('./utils/update-cfg.js');
+import * as vscode from 'vscode';
+import { updateCfgFile } from './utils/update-cfg';
 
-
-async function quickPickCfgFiles(placeHolder = 'Select a .cfg file') {
+async function quickPickCfgFiles(placeHolder: string = 'Select a .cfg file'): Promise<vscode.Uri | undefined> {
 	const files = await vscode.workspace.findFiles('**/*.cfg');
 	if (files.length === 0) {
 		vscode.window.showInformationMessage('No .cfg files found in the workspace.');
@@ -28,22 +27,17 @@ async function quickPickCfgFiles(placeHolder = 'Select a .cfg file') {
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 
-/**
- * @param {vscode.ExtensionContext} context
- */
-function activate(context) {
-
+export function activate(context: vscode.ExtensionContext): void {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('"factorio-locale-format-helper" is now active!');
 
 	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with  registerCommand
+	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	const disposable = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async function () {
+	const disposable = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async () => {
 		try {
-
 			const sourceFile = await quickPickCfgFiles("Select the source .cfg file (Usually the one under locale/en/)");
 			if (!sourceFile) {
 				return;
@@ -63,9 +57,8 @@ function activate(context) {
 				} else {
 					vscode.window.showErrorMessage(`Failed to update target file ${targetFile.fsPath}.`);
 				}
-			})
-
-		} catch (error) {
+			});
+		} catch (error: any) {
 			vscode.window.showErrorMessage(`Error: ${error.message}`);
 		}
 	});
@@ -74,9 +67,4 @@ function activate(context) {
 }
 
 // This method is called when your extension is deactivated
-function deactivate() { }
-
-module.exports = {
-	activate,
-	deactivate
-}
+export function deactivate(): void { }
