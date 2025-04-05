@@ -1,6 +1,7 @@
 node_modules
 .vscode-test/
 *.vsix
+out/**
 .secret
 vsc-extension-quickstart.md
 TODO.md

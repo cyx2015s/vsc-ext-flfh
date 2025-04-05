@@ -50,7 +50,7 @@ suite('parseCfgFileData Tests', () => {
         // Clean up the temporary file after each test
         try {
             await fs.unlink(tempFilePath);
-        } catch (err) {
+        } catch (err: any) {
             console.error(`Error deleting temp file: ${err.message}`);
         }
     });
@@ -103,7 +103,7 @@ suite('parseCfgFileComments Tests', () => {
         // Clean up the temporary file after each test
         try {
             await fs.unlink(tempFilePath);
-        } catch (err) {
+        } catch (err: any) {
             console.error(`Error deleting temp file: ${err.message}`);
         }
     });

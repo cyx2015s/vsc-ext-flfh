@@ -36,7 +36,7 @@ suite('updateCfgFile Tests', () => {
         try {
             await fs.unlink(sourceFilePath);
             await fs.unlink(targetFilePath);
-        } catch (err) {
+        } catch (err: any) {
             console.error(`Error deleting temp files: ${err.message}`);
         }
     });
