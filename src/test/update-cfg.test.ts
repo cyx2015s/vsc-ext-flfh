@@ -22,6 +22,11 @@ suite('updateCfgFile Tests', () => {
             sourceContent: `key1=Key1\nkey2=Key2\nkey3=Key3\nkey4=Key4\nkey5=Key5`,
             targetContent: `key1=键1\nkey3=键3\nkey2=键2`,
             expectedContent: `key1=键1\nkey2=键2\nkey3=键3\nkey4=Key4\nkey5=Key5`
+        },
+        {
+            sourceContent: `# A comment\niron-plate=[item=iron-plate] Iron Plate`,
+            targetContent: `iron-plate=[item=iron-plate]铁板\n# Another comment`,
+            expectedContent: `; A comment\niron-plate=[item=iron-plate]铁板\n# Another comment`
         }
     ];
 

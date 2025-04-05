@@ -43,10 +43,9 @@ export const parseCfgFileComments = async (filePath: string): Promise<Map<string
         if (/^\[.*\]$/.test(line)) {
             currentSection = line.slice(1, -1);
             result.set(currentSection, result.get(currentSection) || []);
-        }
-        if (line.startsWith('#') || line.startsWith(';')) {
-            const cleanedComment = line.slice(1).trim();
-            result.get(currentSection)!.push(cleanedComment);
+        } else if (line.startsWith('#') || line.startsWith(';')) {
+            const comment = line.slice(1);
+            result.get(currentSection)!.push(comment);
         }
     });
     return result;

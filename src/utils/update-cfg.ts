@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { parseCfgFileData, parseCfgFileComments } from './parse-cfg';
+import { promises as fs } from 'fs';
 
 /**
  * Combines keys from two maps, ensuring no duplicates.
@@ -41,31 +42,62 @@ export const updateCfgFile = async (sourceFilePath: string, targetFilePath: stri
         const targetComments = await parseCfgFileComments(targetFilePath);
         const allSections = combinedKeys(sourceData, targetData);
 
-        let newTargetFileContent: string[] = [];
+        let newTargetFileContentMap: Map<string, string[]> = new Map([["", []]]);
+
+        const sourceContent = await fs.readFile(sourceFilePath, 'utf8');
+        let currentSection = '';
+        sourceContent.split('\n').forEach((line) => {
+            line = line.trim();
+            if (/^\[.*\]$/.test(line)) {
+                // Section header
+                currentSection = line.slice(1, -1);
+                newTargetFileContentMap.set(currentSection, []);
+            } else if (line.trim() === '') {
+                // Empty line
+                newTargetFileContentMap.get(currentSection)!.push('');
+            } else if (line.startsWith(";") || line.startsWith("#")) {
+                // Comment line
+                newTargetFileContentMap.get(currentSection)!.push(";" + line.slice(1));
+            } else {
+                // Key-value pair
+                const [key, ...valueParts] = line.split('=');
+                const value = valueParts.join('=');
+                const targetValue = targetData.get(currentSection)?.get(key) ?? value;
+                newTargetFileContentMap.get(currentSection)!.push(formatLine(key, targetValue, false));
+            }
+        });
         for (const section of allSections) {
-            if (section !== "") {
-                newTargetFileContent.push(`\n[${section}]`);
-            }
-            const sourceSectionData = sourceData.get(section) || new Map();
-            const targetSectionData = targetData.get(section) || new Map();
-            const sourceSectionComments = sourceComments.get(section) || [];
-            const targetSectionComments = targetComments.get(section) || [];
-            const allKeys = combinedKeys(sourceSectionData, targetSectionData);
+            if (!sourceData.has(section)) {
+                // It is a section that is not in the source file
+                // Add it in commented form
+                newTargetFileContentMap.set(section, []);
+                for (const [key, value] of targetData.get(section)!.entries()) {
+                    newTargetFileContentMap.get(section)?.push(formatLine(key, value, true));
+                }
 
-            for (const key of allKeys) {
-                const sourceValue = sourceSectionData.get(key) || undefined;
-                const targetValue = targetSectionData.get(key) || sourceValue;
-                newTargetFileContent.push(formatLine(key, targetValue, sourceValue === undefined));
+            } else {
+                for (const [key, value] of targetData.get(section)!.entries()) {
+                    if (!sourceData.get(section)!.has(key)) {
+                        // It is a key that is not in the source file
+                        // Add it in commented form
+                        newTargetFileContentMap.get(section)?.push(formatLine(key, value, true));
+                    }
+                }
             }
-
-            for (const comment of sourceSectionComments) {
-                newTargetFileContent.push(`;${comment}`);
-            }
-            for (const comment of targetSectionComments) {
-                newTargetFileContent.push(`#${comment}`);
+            for (const comment of targetComments.get(section)!) {
+                newTargetFileContentMap.get(section)?.push(`#${comment}`);
             }
         }
-
+        let newTargetFileContent: string[] = []
+        for (const [section, lines] of newTargetFileContentMap.entries()) {
+            if (section !== "") {
+                // Add section header only if it's not the default section
+                newTargetFileContent.push(`[${section}]`);
+            }
+            for (const line of lines) {
+                newTargetFileContent.push(line);
+            }
+        }
         const edit = new vscode.WorkspaceEdit();
         const targetUri = vscode.Uri.file(targetFilePath);
         edit.delete(targetUri, new vscode.Range(new vscode.Position(0, 0), new vscode.Position(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER)));
