@@ -105,36 +105,36 @@ export function activate(context: vscode.ExtensionContext): void {
 		{ pattern: '**/*.cfg', scheme: 'file' },
 		{
 			async provideSignatureHelp(document, position, token): Promise<vscode.SignatureHelp | null> {
-
 				const lineText = document.lineAt(position.line).text;
 				const keyMatch = lineText.match(/^([^=]+?)=/);
 				if (!keyMatch) { return null; }
 
 				const key = keyMatch[1].trim();
 				console.log(`key = ${key}`);
-				if (token.isCancellationRequested) { return null; }
 
 				const cfgFiles = await vscode.workspace.findFiles('**/*.cfg');
 				if (!cfgFiles || cfgFiles.length === 0) { return null; }
 				let signatures: vscode.SignatureInformation[] = [];
-				cfgFiles.forEach(
-					async (file) => {
-						const fileData = await parseCfgFileData(file.fsPath);
-						for (const section of fileData.keys()) {
-							if (fileData.get(section)!.has(key)) {
-								signatures.push(new vscode.SignatureInformation(
-									`Key: ${section}.${key}`,
-									new vscode.MarkdownString(`**Original Text**:\n\n${fileData.get(section)!.get(key)}`),
-								));
-							}
+				for (const file of cfgFiles) {
+					if (file.fsPath === document.uri.fsPath) {
+						continue;
+					}
+					const fileData = await parseCfgFileData(file.fsPath);
+					for (const section of fileData.keys()) {
+						if (fileData.get(section)!.has(key)) {
+							signatures.push({
+								label: `Key: ${section}.${key}`,
+								documentation: new vscode.MarkdownString(`**Original Text**:\n\n${fileData.get(section)!.get(key)}`),
+								parameters: []
+							});
 						}
 					}
-				);
-				console.log(signatures);
-				const signatureHelp = new vscode.SignatureHelp();
-				signatureHelp.signatures = signatures;
-				signatureHelp.activeSignature = 0;
-				console.log(signatureHelp);
+				} 
+				let signatureHelp = {
+					signatures: signatures,
+					activeSignature: 0,
+					activeParameter: 0,
+				};
 				return signatureHelp;
 			}
 		},
@@ -142,6 +142,7 @@ export function activate(context: vscode.ExtensionContext): void {
 	);
 
 	context.subscriptions.push(disposableProvider);
+
 }
 
 // This method is called when your extension is deactivated
