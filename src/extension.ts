@@ -112,9 +112,6 @@ export function activate(context: vscode.ExtensionContext): void {
 				if (token.isCancellationRequested) {
 					return null;
 				}
-				if (context.triggerCharacter === '\n') {
-					return null;
-				}
 				if (context.isRetrigger) {
 					return context.activeSignatureHelp;
 				}
@@ -124,7 +121,7 @@ export function activate(context: vscode.ExtensionContext): void {
 				if (!keyMatch) { return null; }
 
 				const key = keyMatch[1].trim();
-				const cfgFiles = await vscode.workspace.findFiles('**/*.cfg');
+				const cfgFiles = await vscode.workspace.findFiles('**/en/*.cfg');
 				if (!cfgFiles || cfgFiles.length === 0) { return null; }
 				let signatures: vscode.SignatureInformation[] = [];
 				for (const file of cfgFiles) {
@@ -144,7 +141,7 @@ export function activate(context: vscode.ExtensionContext): void {
 					if (token.isCancellationRequested) {
 						return null;
 					}
-				} 
+				}
 				let signatureHelp = {
 					signatures: signatures,
 					activeSignature: 0,
