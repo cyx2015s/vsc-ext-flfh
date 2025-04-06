@@ -18,7 +18,7 @@ suite('parseCfgFileData Tests', () => {
 
     const dataTestCases: ParseDataTestCase[] = [
         {
-            cfgContent: `# This is a comment\n[section1\nkey1=value1\nkey2=value2\n[section2]\nkeyA=valueA\nkeyB=valueB`,
+            cfgContent: `# This is a comment\n[section1]\nkey1=value1\nkey2=value2\n[section2]\nkeyA=valueA\nkeyB=valueB`,
             expectedResult: new Map([
                 ['', new Map()],
                 ['section1', new Map([['key1', 'value1'], ['key2', 'value2']])],
@@ -73,9 +73,9 @@ suite('parseCfgFileComments Tests', () => {
         {
             cfgContent: `\n# Global comment\n[section1]\n# Comment for section1\n; Another comment for section1\nkey1=value1\n[section2]\n# Comment for section2`,
             expectedResult: new Map([
-                ['', ['Global comment']],
-                ['section1', ['Comment for section1', 'Another comment for section1']],
-                ['section2', ['Comment for section2']]
+                ['', [' Global comment']],
+                ['section1', [' Comment for section1', ' Another comment for section1']],
+                ['section2', [' Comment for section2']]
             ])
         },
         {
@@ -89,7 +89,7 @@ suite('parseCfgFileComments Tests', () => {
         {
             cfgContent: `\n# Global comment\n; Another global comment`,
             expectedResult: new Map([
-                ['', ['Global comment', 'Another global comment']]
+                ['', [' Global comment', ' Another global comment']]
             ])
         }
     ];

@@ -12,7 +12,7 @@ export const parseCfgFileData = async (filePath: string): Promise<Map<string, Ma
     let currentSection = "";
     content.split('\n').forEach(line => {
         line = line.trim();
-        if (!line || line.startsWith('#') || line.startsWith(';')) return;
+        if (!line || line.startsWith('#') || line.startsWith(';')) { return; }
 
         if (/^\[.*\]$/.test(line)) {
             currentSection = line.slice(1, -1);

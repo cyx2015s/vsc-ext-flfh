@@ -93,7 +93,7 @@ export const updateCfgFile = async (sourceFilePath: string, targetFilePath: stri
             }
             }
         }
-        let newTargetFileContent: string[] = []
+        let newTargetFileContent: string[] = [];
         for (const [section, lines] of newTargetFileContentMap.entries()) {
             if (section !== "") {
                 // Add section header only if it's not the default section
