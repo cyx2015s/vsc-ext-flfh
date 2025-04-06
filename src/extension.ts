@@ -101,11 +101,18 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	context.subscriptions.push(disposableEditor);
 
+	let lastTriggerUri: vscode.Uri | null | undefined;
+	let lastTriggerLine: number | null | undefined;
+
 	let disposableProvider = vscode.languages.registerSignatureHelpProvider(
 		{ pattern: '**/*.cfg', scheme: 'file' },
 		{
 			async provideSignatureHelp(document, position, token, context): Promise<vscode.SignatureHelp | null | undefined> {
-				if (!document.lineAt(position.line).text.includes("=")) {
+
+				const currentUri = document.uri;
+				const currentLine = position.line;
+				try {
+					if (!document.lineAt(position.line).text.includes("=")) {
 					// When there are no = signs
 					return null;
 				}
@@ -113,10 +120,12 @@ export function activate(context: vscode.ExtensionContext): void {
 					return null;
 				}
 				if (context.isRetrigger) {
-					return context.activeSignatureHelp;
+					if (lastTriggerUri && lastTriggerUri.toString() === currentUri.toString() && lastTriggerLine && lastTriggerLine === currentLine) {
+						return context.activeSignatureHelp;
+					}
 				}
 
-				const lineText = document.lineAt(position.line).text;
+					const lineText = document.lineAt(currentLine).text;
 				const keyMatch = lineText.match(/^([^=]+?)=/);
 				if (!keyMatch) { return null; }
 
@@ -125,7 +134,7 @@ export function activate(context: vscode.ExtensionContext): void {
 				if (!cfgFiles || cfgFiles.length === 0) { return null; }
 				let signatures: vscode.SignatureInformation[] = [];
 				for (const file of cfgFiles) {
-					if (file.fsPath === document.uri.fsPath) {
+					if (file.fsPath === currentUri.fsPath) {
 						continue;
 					}
 					const fileData = await parseCfgFileData(file.fsPath);
@@ -133,7 +142,7 @@ export function activate(context: vscode.ExtensionContext): void {
 						if (fileData.get(section)!.has(key)) {
 							signatures.push({
 								label: `Key: ${section}.${key}`,
-								documentation: new vscode.MarkdownString(`**Original Text**:\n\n${fileData.get(section)!.get(key)}`),
+								documentation: new vscode.MarkdownString(`**Original Text**:\n\n\`\`\`md\n${fileData.get(section)!.get(key)}\n\`\`\``),
 								parameters: []
 							});
 						}
@@ -147,7 +156,12 @@ export function activate(context: vscode.ExtensionContext): void {
 					activeSignature: 0,
 					activeParameter: 0,
 				};
-				return signatureHelp;
+					return signatureHelp;
+				}
+				finally {
+					lastTriggerUri = currentUri;
+					lastTriggerLine = currentLine;
+				}
 			}
 		},
 		'='
