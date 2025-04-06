@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import { updateCfgFile } from './utils/update-cfg';
 import { quickPickCfgFiles } from './utils/quick-pick';
+import { parseCfgFileData } from './utils/parse-cfg';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -100,6 +101,47 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	context.subscriptions.push(disposableEditor);
 
+	let disposableProvider = vscode.languages.registerSignatureHelpProvider(
+		{ pattern: '**/*.cfg', scheme: 'file' },
+		{
+			async provideSignatureHelp(document, position, token): Promise<vscode.SignatureHelp | null> {
+
+				const lineText = document.lineAt(position.line).text;
+				const keyMatch = lineText.match(/^([^=]+?)=/);
+				if (!keyMatch) { return null; }
+
+				const key = keyMatch[1].trim();
+				console.log(`key = ${key}`);
+				if (token.isCancellationRequested) { return null; }
+
+				const cfgFiles = await vscode.workspace.findFiles('**/*.cfg');
+				if (!cfgFiles || cfgFiles.length === 0) { return null; }
+				let signatures: vscode.SignatureInformation[] = [];
+				cfgFiles.forEach(
+					async (file) => {
+						const fileData = await parseCfgFileData(file.fsPath);
+						for (const section of fileData.keys()) {
+							if (fileData.get(section)!.has(key)) {
+								signatures.push(new vscode.SignatureInformation(
+									`Key: ${section}.${key}`,
+									new vscode.MarkdownString(`**Original Text**:\n\n${fileData.get(section)!.get(key)}`),
+								));
+							}
+						}
+					}
+				);
+				console.log(signatures);
+				const signatureHelp = new vscode.SignatureHelp();
+				signatureHelp.signatures = signatures;
+				signatureHelp.activeSignature = 0;
+				console.log(signatureHelp);
+				return signatureHelp;
+			}
+		},
+		'=' // 触发字符
+	);
+
+	context.subscriptions.push(disposableProvider);
 }
 
 // This method is called when your extension is deactivated
