@@ -2,6 +2,7 @@ node_modules
 .vscode-test/
 *.vsix
 out/**
-.secret
+.env
 vsc-extension-quickstart.md
 TODO.md
+publish.yml
