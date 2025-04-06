@@ -105,20 +105,25 @@ export function activate(context: vscode.ExtensionContext): void {
 		{ pattern: '**/*.cfg', scheme: 'file' },
 		{
 			async provideSignatureHelp(document, position, token, context): Promise<vscode.SignatureHelp | null | undefined> {
-
+				if (!document.lineAt(position.line).text.includes("=")) {
+					// When there are no = signs
+					return null;
+				}
 				if (token.isCancellationRequested) {
+					return null;
+				}
+				if (context.triggerCharacter === '\n') {
 					return null;
 				}
 				if (context.isRetrigger) {
 					return context.activeSignatureHelp;
 				}
+
 				const lineText = document.lineAt(position.line).text;
 				const keyMatch = lineText.match(/^([^=]+?)=/);
 				if (!keyMatch) { return null; }
 
 				const key = keyMatch[1].trim();
-				console.log(`key = ${key}`);
-
 				const cfgFiles = await vscode.workspace.findFiles('**/*.cfg');
 				if (!cfgFiles || cfgFiles.length === 0) { return null; }
 				let signatures: vscode.SignatureInformation[] = [];
@@ -148,8 +153,7 @@ export function activate(context: vscode.ExtensionContext): void {
 				return signatureHelp;
 			}
 		},
-		'=',
-		'\n'
+		'='
 	);
 
 	context.subscriptions.push(disposableProvider);
