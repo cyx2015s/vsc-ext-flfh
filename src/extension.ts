@@ -104,7 +104,14 @@ export function activate(context: vscode.ExtensionContext): void {
 	let disposableProvider = vscode.languages.registerSignatureHelpProvider(
 		{ pattern: '**/*.cfg', scheme: 'file' },
 		{
-			async provideSignatureHelp(document, position, token): Promise<vscode.SignatureHelp | null> {
+			async provideSignatureHelp(document, position, token, context): Promise<vscode.SignatureHelp | null | undefined> {
+
+				if (token.isCancellationRequested) {
+					return null;
+				}
+				if (context.isRetrigger) {
+					return context.activeSignatureHelp;
+				}
 				const lineText = document.lineAt(position.line).text;
 				const keyMatch = lineText.match(/^([^=]+?)=/);
 				if (!keyMatch) { return null; }
@@ -129,6 +136,9 @@ export function activate(context: vscode.ExtensionContext): void {
 							});
 						}
 					}
+					if (token.isCancellationRequested) {
+						return null;
+					}
 				} 
 				let signatureHelp = {
 					signatures: signatures,
@@ -138,7 +148,8 @@ export function activate(context: vscode.ExtensionContext): void {
 				return signatureHelp;
 			}
 		},
-		'=' // 触发字符
+		'=',
+		'\n'
 	);
 
 	context.subscriptions.push(disposableProvider);
