@@ -23,7 +23,7 @@ jobs:
         run: npm ci
 
       - name: Install Xvfb
-        run: sudo apt-get install -y xvfb
+        run: xvfb-run -a npm run test -- --disable-gpu
 
       - name: Run tests
         run: npm run test
