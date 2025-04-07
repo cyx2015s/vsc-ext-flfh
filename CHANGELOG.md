@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+## [0.4.2] - 2025-04-07
+
+### Locale
+
+- Added translation for the extension itself. Currently supports `en` and `zh-CN`.
+
 ## [0.4.1] - 2025-04-07
 
 ### Added
