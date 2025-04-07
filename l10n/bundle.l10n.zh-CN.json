@@ -1,6 +1,7 @@
 {
+  "None": "无",
   "Key: {0}.{1}": "键: {0}.{1}",
-  "**Original Text** \n```md\n{0}\n```": "**原文** \n```md\n{0}\n```",
+  "**Original Text** \n```md\n{0}\n``` \n **Parameters** \n\n{1}": "**原文** \n```md\n{0}\n```\n **参数** \n\n{1}",
   "Select the source .cfg file (Usually the one under locale/en/)": "选择源 .cfg 文件（通常是 locale/en/ 下的文件）",
   "Selected source file: {0}": "已选择源文件：{0}",
   "Select the target .cfg file (The language you want to translate to)": "选择目标 .cfg 文件（要翻译成的语言）",

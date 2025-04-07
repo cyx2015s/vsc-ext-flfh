@@ -14,6 +14,16 @@ export function registerLocaleKeyValueSignatureProvider(context: vscode.Extensio
 
     let lastTriggerUri: vscode.Uri | null | undefined;
     let lastTriggerLine: number | null | undefined;
+    context.subscriptions.push(
+        vscode.commands.registerCommand('factorio-locale-format-helper.insertText', async (text: string) => {
+            const activeEditor = vscode.window.activeTextEditor;
+            const edit = new vscode.WorkspaceEdit();
+            edit.insert(activeEditor!.document.uri, activeEditor!.selection.active, text);
+            await vscode.workspace.applyEdit(edit);
+            await vscode.commands.executeCommand("editor.action.triggerParameterHints");
+            return;
+        })
+    );
 
     let disposableProvider = vscode.languages.registerSignatureHelpProvider(
         { pattern: '**/*.cfg', scheme: 'file' },
@@ -51,9 +61,14 @@ export function registerLocaleKeyValueSignatureProvider(context: vscode.Extensio
                         const fileData = await parseCfgFileData(file.fsPath);
                         for (const section of fileData.keys()) {
                             if (fileData.get(section)!.has(key)) {
+                                const originalText = fileData.get(section)!.get(key) ?? "";
+                                const matches = originalText.match(/((__.*?__)|(\[.*?\]))/g) || [];
+                                const insertLinks = matches.map((match) => `[\`${match}\`](command:factorio-locale-format-helper.insertText?${encodeURIComponent(JSON.stringify(match))})`).join(", ") || vscode.l10n.t("None");
+                                const documentation = new vscode.MarkdownString(vscode.l10n.t(`**Original Text** \n\`\`\`md\n{0}\n\`\`\` \n **Parameters** \n\n{1}`, originalText, insertLinks), true);
+                                documentation.isTrusted = true;
                                 signatures.push({
                                     label: vscode.l10n.t(`Key: {0}.{1}`, section, key),
-                                    documentation: new vscode.MarkdownString(vscode.l10n.t(`**Original Text** \n\`\`\`md\n{0}\n\`\`\``, fileData.get(section)!.get(key) ?? ""), true),
+                                    documentation: documentation,
                                     parameters: []
                                 });
                             }
