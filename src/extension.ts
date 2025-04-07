@@ -48,13 +48,13 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	disposableCommand = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSourceOnEditor', async () => {
 		try {
-			const sourceFile = await quickPickCfgFiles("Select the source .cfg file (Usually the one under locale/en/)");
-			if (!sourceFile) {
-				return;
-			}
 			const activeEditor = vscode.window.activeTextEditor;
 			if (!activeEditor || !activeEditor.document.fileName.endsWith(".cfg")) {
 				vscode.window.showErrorMessage('No active .cfg file is open in the editor.');
+				return;
+			}
+			const sourceFile = await quickPickCfgFiles("Select the source .cfg file (Usually the one under locale/en/)");
+			if (!sourceFile) {
 				return;
 			}
 			const targetFile = activeEditor.document.uri;

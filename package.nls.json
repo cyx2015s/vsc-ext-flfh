@@ -1,0 +1,6 @@
+{
+  "extension.displayName": "Factorio Locale Format Helper",
+  "extension.description": "A helper tool for managing Factorio locale files.",
+  "command.updateKeysFromSource": "Update Keys from Source",
+  "command.updateKeysFromSourceOnEditor": "Update Keys from Source (Editor)"
+}

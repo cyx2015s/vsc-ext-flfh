@@ -1,7 +1,7 @@
 {
   "name": "factorio-locale-format-helper",
-  "displayName": "Factorio Locale Format Helper",
-  "description": "A tool to update translation keys from source file.",
+  "displayName": "%extension.displayName%",
+  "description": "%extension.description%",
   "version": "0.4.1",
   "publisher": "tanvec",
   "engines": {
@@ -31,7 +31,12 @@
     "commands": [
       {
         "command": "factorio-locale-format-helper.updateKeysFromSource",
-        "title": "Update Localization Keys",
+        "title": "%command.updateKeysFromSource%",
+        "category": "FLFH"
+      },
+      {
+        "command": "factorio-locale-format-helper.updateKeysFromSourceOnEditor",
+        "title": "%command.updateKeysFromSourceOnEditor%",
         "category": "FLFH"
       }
     ],
@@ -78,5 +83,8 @@
       "href": "https://code.visualstudio.com",
       "description": "Visual Studio Code Version"
     }
-  ]
+  ],
+  "dependencies": {
+    "@vscode/l10n": "^0.0.18"
+  }
 }
