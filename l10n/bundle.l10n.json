@@ -1,0 +1,13 @@
+{
+  "Select the source .cfg file (Usually the one under locale/en/)": "Select the source .cfg file (Usually the one under locale/en/)",
+  "Selected source file: {0}": "Selected source file: {0}",
+  "Select the target .cfg file (The language you want to translate to)": "Select the target .cfg file (The language you want to translate to)",
+  "Source and target files cannot be the same.": "Source and target files cannot be the same.",
+  "Target file {0} updated successfully!": "Target file {0} updated successfully!",
+  "Failed to update target file {0}.": "Failed to update target file {0}.",
+  "Error: {0}": "Error: {0}",
+  "No active .cfg file is open in the editor.": "No active .cfg file is open in the editor.",
+  "$(sync) FLFH: Update Keys": "$(sync) FLFH: Update Keys",
+  "Update keys from source locale cfg file": "Update keys from source locale cfg file",
+  "No .cfg files found in the workspace.": "No .cfg files found in the workspace."
+}

@@ -24,6 +24,7 @@
     "theme": "dark"
   },
   "main": "./out/extension.js",
+  "l10n": "./l10n",
   "activationEvents": [
     "workspaceContains:**/*.cfg"
   ],
@@ -42,12 +43,12 @@
     ],
     "configuration": [
       {
-        "title": "FLFH Settings",
+        "title": "%settings.title%",
         "properties": {
           "factorio-locale-format-helper.discardCommentsInTarget": {
             "type": "boolean",
             "default": false,
-            "description": "Discard existing comments in target file."
+            "description": "%settings.discardCommentsInTarget%"
           }
         }
       }

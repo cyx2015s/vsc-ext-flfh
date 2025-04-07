@@ -1,0 +1,13 @@
+{
+  "Select the source .cfg file (Usually the one under locale/en/)": "选择源 .cfg 文件（通常是 locale/en/ 下的文件）",
+  "Selected source file: {0}": "已选择源文件：{0}",
+  "Select the target .cfg file (The language you want to translate to)": "选择目标 .cfg 文件（要翻译成的语言）",
+  "Source and target files cannot be the same.": "源文件和目标文件不能相同。",
+  "Target file {0} updated successfully!": "目标文件 {0} 更新成功！",
+  "Failed to update target file {0}.": "目标文件 {0} 更新失败。",
+  "Error: {0}": "错误：{0}",
+  "No active .cfg file is open in the editor.": "编辑器中没有打开的 .cfg 文件。",
+  "$(sync) FLFH: Update Keys": "$(sync) FLFH：更新键值对",
+  "Update keys from source locale cfg file": "从源语言 .cfg 文件更新键值",
+  "No .cfg files found in the workspace.": "在工作区中未找到 .cfg 文件。"
+}
