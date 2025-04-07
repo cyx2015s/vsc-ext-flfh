@@ -1,4 +1,6 @@
 {
+  "Key: {0}.{1}": "Key: {0}.{1}",
+  "**Original Text** \n```md\n{0}\n```": "**Original Text** \n```md\n{0}\n```",
   "Select the source .cfg file (Usually the one under locale/en/)": "Select the source .cfg file (Usually the one under locale/en/)",
   "Selected source file: {0}": "Selected source file: {0}",
   "Select the target .cfg file (The language you want to translate to)": "Select the target .cfg file (The language you want to translate to)",

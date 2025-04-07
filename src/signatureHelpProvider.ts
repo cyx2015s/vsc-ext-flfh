@@ -52,8 +52,8 @@ export function registerLocaleKeyValueSignatureProvider(context: vscode.Extensio
                         for (const section of fileData.keys()) {
                             if (fileData.get(section)!.has(key)) {
                                 signatures.push({
-                                    label: `Key: ${section}.${key}`,
-                                    documentation: new vscode.MarkdownString(`**Original Text**:\n\n\`\`\`md\n${fileData.get(section)!.get(key)}\n\`\`\``),
+                                    label: vscode.l10n.t(`Key: {0}.{1}`, section, key),
+                                    documentation: new vscode.MarkdownString(vscode.l10n.t(`**Original Text** \n\`\`\`md\n{0}\n\`\`\``, fileData.get(section)!.get(key) ?? ""), true),
                                     parameters: []
                                 });
                             }
