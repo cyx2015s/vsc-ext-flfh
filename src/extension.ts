@@ -78,28 +78,46 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	context.subscriptions.push(disposableCommand);
 
-	let disposableEditor = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
-
-	vscode.window.onDidChangeActiveTextEditor((editor) => {
-		if (editor && editor.document.fileName.endsWith(".cfg")) {
-			disposableEditor.show();
-		} else {
-			disposableEditor.hide();
+	let disposableCodeLens = vscode.languages.registerCodeLensProvider({ scheme: 'file', pattern: '**/*.cfg' }, {
+		provideCodeLenses(document, token) {
+			return [
+				new vscode.CodeLens(new vscode.Range(0, 0, 0, 0), {
+					title: "$(sync) FLFH: Update Keys",
+					tooltip: "Update keys from source locale cfg file",
+					command: "factorio-locale-format-helper.updateKeysFromSourceOnEditor"
+				})
+			];
+		},
+		resolveCodeLens(codeLens, token) {
+			return codeLens;
 		}
 	});
 
+	context.subscriptions.push(disposableCodeLens);
 
-	if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName.endsWith(".cfg")) {
-		disposableEditor.show();
-	} else {
-		disposableEditor.hide();
-	}
-	disposableEditor.text = "$(sync) FLFH: Update Keys";
-	disposableEditor.tooltip = "Update keys from source locale cfg file";
-	disposableEditor.command = "factorio-locale-format-helper.updateKeysFromSourceOnEditor";
-	disposableEditor.show();
+	// The status bar item is deprecated. Now uses codelens button instead.
+	// let disposableEditor = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 
-	context.subscriptions.push(disposableEditor);
+	// vscode.window.onDidChangeActiveTextEditor((editor) => {
+	// 	if (editor && editor.document.fileName.endsWith(".cfg")) {
+	// 		disposableEditor.show();
+	// 	} else {
+	// 		disposableEditor.hide();
+	// 	}
+	// });
+
+
+	// if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName.endsWith(".cfg")) {
+	// 	disposableEditor.show();
+	// } else {
+	// 	disposableEditor.hide();
+	// }
+	// disposableEditor.text = "$(sync) FLFH: Update Keys";
+	// disposableEditor.tooltip = "Update keys from source locale cfg file";
+	// disposableEditor.command = "factorio-locale-format-helper.updateKeysFromSourceOnEditor";
+	// disposableEditor.show();
+
+	// context.subscriptions.push(disposableEditor);
 
 	registerLocaleKeyValueSignatureProvider(context);
 }

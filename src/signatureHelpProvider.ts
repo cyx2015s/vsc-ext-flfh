@@ -10,7 +10,7 @@ import { parseCfgFileData } from './utils/parse-cfg';
  * @param context The extension context.
  * @returns null
  */
-export async function registerLocaleKeyValueSignatureProvider(context: vscode.ExtensionContext) {
+export function registerLocaleKeyValueSignatureProvider(context: vscode.ExtensionContext) {
 
     let lastTriggerUri: vscode.Uri | null | undefined;
     let lastTriggerLine: number | null | undefined;
