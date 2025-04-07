@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+## [0.4.0-a] - 2025-04-07
+
+### Added
+
+- A signature help will pop up when editing a locale file. By default, it will search all cfg files match the pattern `**/en/*.cfg` in the workspace. Configurable in the future.
+
 ## [0.3.0] - 2025-04-05
 
 ### Changed
