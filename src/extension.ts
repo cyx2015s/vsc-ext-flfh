@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext): void {
 			if (!sourceFile) {
 				return;
 			}
-			vscode.window.showInformationMessage(vscode.l10n.t(`Selected source file: ${sourceFile.fsPath}`));
+			vscode.window.showInformationMessage(vscode.l10n.t(`Selected source file: {0}`, sourceFile.fsPath));
 			const targetFile = await quickPickCfgFiles(vscode.l10n.t(`Select the target .cfg file (The language you want to translate to)`));
 			if (!targetFile) {
 				return;
@@ -34,13 +34,13 @@ export function activate(context: vscode.ExtensionContext): void {
 			}
 			updateCfgFile(sourceFile.fsPath, targetFile.fsPath).then((success) => {
 				if (success) {
-					vscode.window.showInformationMessage(vscode.l10n.t(`Target file ${targetFile.fsPath} updated successfully!`));
+					vscode.window.showInformationMessage(vscode.l10n.t(`Target file {0} updated successfully!`, targetFile.fsPath));
 				} else {
-					vscode.window.showErrorMessage(vscode.l10n.t(`Failed to update target file ${targetFile.fsPath}.`));
+					vscode.window.showErrorMessage(vscode.l10n.t(`Failed to update target file {0}.`, targetFile.fsPath));
 				}
 			});
 		} catch (error: any) {
-			vscode.window.showErrorMessage(vscode.l10n.t(`Error: ${error.message}`));
+			vscode.window.showErrorMessage(vscode.l10n.t(`Error: {0}`, error.message));
 		}
 	});
 
@@ -62,16 +62,16 @@ export function activate(context: vscode.ExtensionContext): void {
 				vscode.window.showErrorMessage(vscode.l10n.t('Source and target files cannot be the same.'));
 				return;
 			}
-			vscode.window.showInformationMessage(vscode.l10n.t(`Selected source file: ${sourceFile.fsPath}`));
+			vscode.window.showInformationMessage(vscode.l10n.t(`Selected source file: {0}`, sourceFile.fsPath));
 			updateCfgFile(sourceFile.fsPath, targetFile.fsPath).then((success) => {
 				if (success) {
-					vscode.window.showInformationMessage(vscode.l10n.t(`Target file ${targetFile.fsPath} updated successfully!`));
+					vscode.window.showInformationMessage(vscode.l10n.t(`Target file {0} updated successfully!`, targetFile.fsPath));
 				} else {
-					vscode.window.showErrorMessage(vscode.l10n.t(`Failed to update target file ${targetFile.fsPath}.`));
+					vscode.window.showErrorMessage(vscode.l10n.t(`Failed to update target file {0}.`, targetFile.fsPath));
 				}
 			});
 		} catch (error: any) {
-			vscode.window.showErrorMessage(vscode.l10n.t(`Error: ${error.message}`));
+			vscode.window.showErrorMessage(vscode.l10n.t(`Error: {0}`, error.message));
 		}
 	});
 
