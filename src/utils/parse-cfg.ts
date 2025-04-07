@@ -21,9 +21,8 @@ export const parseCfgFileData = async (filePath: string): Promise<Map<string, Ma
             const [key, ...valueParts] = line.split('=');
             const value = valueParts.join('=');
             result.get(currentSection)!.set(key, value);
-        } else {
-            throw new Error(`Invalid line format: ${line}`);
-        }
+        } 
+        
     });
     return result;
 };

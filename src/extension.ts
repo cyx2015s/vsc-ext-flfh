@@ -19,28 +19,28 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	let disposableCommand = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async () => {
 		try {
-			const sourceFile = await quickPickCfgFiles("Select the source .cfg file (Usually the one under locale/en/)");
+			const sourceFile = await quickPickCfgFiles(vscode.l10n.t("Select the source .cfg file (Usually the one under locale/en/)"));
 			if (!sourceFile) {
 				return;
 			}
-			vscode.window.showInformationMessage(`Selected source file: ${sourceFile.fsPath}`);
-			const targetFile = await quickPickCfgFiles(`Select the target .cfg file (The language you want to translate to)`);
+			vscode.window.showInformationMessage(vscode.l10n.t(`Selected source file: ${sourceFile.fsPath}`));
+			const targetFile = await quickPickCfgFiles(vscode.l10n.t(`Select the target .cfg file (The language you want to translate to)`));
 			if (!targetFile) {
 				return;
 			}
 			if (sourceFile.fsPath === targetFile.fsPath) {
-				vscode.window.showErrorMessage('Source and target files cannot be the same.');
+				vscode.window.showErrorMessage(vscode.l10n.t('Source and target files cannot be the same.'));
 				return;
 			}
 			updateCfgFile(sourceFile.fsPath, targetFile.fsPath).then((success) => {
 				if (success) {
-					vscode.window.showInformationMessage(`Target file ${targetFile.fsPath} updated successfully!`);
+					vscode.window.showInformationMessage(vscode.l10n.t(`Target file ${targetFile.fsPath} updated successfully!`));
 				} else {
-					vscode.window.showErrorMessage(`Failed to update target file ${targetFile.fsPath}.`);
+					vscode.window.showErrorMessage(vscode.l10n.t(`Failed to update target file ${targetFile.fsPath}.`));
 				}
 			});
 		} catch (error: any) {
-			vscode.window.showErrorMessage(`Error: ${error.message}`);
+			vscode.window.showErrorMessage(vscode.l10n.t(`Error: ${error.message}`));
 		}
 	});
 
@@ -50,28 +50,28 @@ export function activate(context: vscode.ExtensionContext): void {
 		try {
 			const activeEditor = vscode.window.activeTextEditor;
 			if (!activeEditor || !activeEditor.document.fileName.endsWith(".cfg")) {
-				vscode.window.showErrorMessage('No active .cfg file is open in the editor.');
+				vscode.window.showErrorMessage(vscode.l10n.t('No active .cfg file is open in the editor.'));
 				return;
 			}
-			const sourceFile = await quickPickCfgFiles("Select the source .cfg file (Usually the one under locale/en/)");
+			const sourceFile = await quickPickCfgFiles(vscode.l10n.t("Select the source .cfg file (Usually the one under locale/en/)"));
 			if (!sourceFile) {
 				return;
 			}
 			const targetFile = activeEditor.document.uri;
 			if (sourceFile.fsPath === targetFile.fsPath) {
-				vscode.window.showErrorMessage('Source and target files cannot be the same.');
+				vscode.window.showErrorMessage(vscode.l10n.t('Source and target files cannot be the same.'));
 				return;
 			}
-			vscode.window.showInformationMessage(`Selected source file: ${sourceFile.fsPath}`);
+			vscode.window.showInformationMessage(vscode.l10n.t(`Selected source file: ${sourceFile.fsPath}`));
 			updateCfgFile(sourceFile.fsPath, targetFile.fsPath).then((success) => {
 				if (success) {
-					vscode.window.showInformationMessage(`Target file ${targetFile.fsPath} updated successfully!`);
+					vscode.window.showInformationMessage(vscode.l10n.t(`Target file ${targetFile.fsPath} updated successfully!`));
 				} else {
-					vscode.window.showErrorMessage(`Failed to update target file ${targetFile.fsPath}.`);
+					vscode.window.showErrorMessage(vscode.l10n.t(`Failed to update target file ${targetFile.fsPath}.`));
 				}
 			});
 		} catch (error: any) {
-			vscode.window.showErrorMessage(`Error: ${error.message}`);
+			vscode.window.showErrorMessage(vscode.l10n.t(`Error: ${error.message}`));
 		}
 	});
 
@@ -82,8 +82,8 @@ export function activate(context: vscode.ExtensionContext): void {
 		provideCodeLenses(document, token) {
 			return [
 				new vscode.CodeLens(new vscode.Range(0, 0, 0, 0), {
-					title: "$(sync) FLFH: Update Keys",
-					tooltip: "Update keys from source locale cfg file",
+					title: vscode.l10n.t("$(sync) FLFH: Update Keys"),
+					tooltip: vscode.l10n.t("Update keys from source locale cfg file"),
 					command: "factorio-locale-format-helper.updateKeysFromSourceOnEditor"
 				})
 			];

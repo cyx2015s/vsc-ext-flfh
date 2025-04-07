@@ -3,7 +3,7 @@ import * as vscode from "vscode";
 export async function quickPickCfgFiles(placeHolder: string = 'Select a .cfg file'): Promise<vscode.Uri | undefined> {
     const files = await vscode.workspace.findFiles('**/*.cfg');
     if (files.length === 0) {
-        vscode.window.showInformationMessage('No .cfg files found in the workspace.');
+        vscode.window.showInformationMessage(vscode.l10n.t('No .cfg files found in the workspace.'));
         return undefined;
     }
 
