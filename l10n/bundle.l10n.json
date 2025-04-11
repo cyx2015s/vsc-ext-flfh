@@ -12,5 +12,13 @@
   "No active .cfg file is open in the editor.": "No active .cfg file is open in the editor.",
   "$(sync) FLFH: Update Keys": "$(sync) FLFH: Update Keys",
   "Update keys from source locale cfg file": "Update keys from source locale cfg file",
-  "No .cfg files found in the workspace.": "No .cfg files found in the workspace."
+  "Select the .cfg file to diff": "Select the .cfg file to diff",
+  "No .cfg file selected": "No .cfg file selected",
+  "Select the old config file": "Select the old config file",
+  "Select the new config file": "Select the new config file",
+  "No .cfg files found in the workspace.": "No .cfg files found in the workspace.",
+  "No workspace folders found.": "No workspace folders found.",
+  "Select a Git repository": "Select a Git repository",
+  "Failed to retrieve Git commits: {0}": "Failed to retrieve Git commits: {0}",
+  "Select a commit": "Select a commit"
 }

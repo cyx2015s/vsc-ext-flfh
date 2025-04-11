@@ -1,7 +1,7 @@
 {
   "None": "无",
-  "Key: {0}.{1}": "键: {0}.{1}",
   "**Original Text** \n```md\n{0}\n``` \n **Parameters** \n\n{1}": "**原文** \n```md\n{0}\n```\n **参数** \n\n{1}",
+  "Key: {0}.{1}": "键: {0}.{1}",
   "Select the source .cfg file (Usually the one under locale/en/)": "选择源 .cfg 文件（通常是 locale/en/ 下的文件）",
   "Selected source file: {0}": "已选择源文件：{0}",
   "Select the target .cfg file (The language you want to translate to)": "选择目标 .cfg 文件（要翻译成的语言）",
@@ -12,5 +12,13 @@
   "No active .cfg file is open in the editor.": "编辑器中没有打开的 .cfg 文件。",
   "$(sync) FLFH: Update Keys": "$(sync) FLFH：更新键值对",
   "Update keys from source locale cfg file": "从源语言 .cfg 文件更新键值",
-  "No .cfg files found in the workspace.": "在工作区中未找到 .cfg 文件。"
+  "Sel ect the .cfg file to diff": "选择要比较的翻译文件",
+  "No .cfg file selected": "未选择翻译文件",
+  "Select the old config file": "选取旧的翻译文件",
+  "Select the new config file": "选取新的翻译文件",
+  "No .cfg files found in the workspace.": "工作区没有找到.cfg结尾的文件",
+  "No workspace folders found.": "没有打开的工作区文件夹。",
+  "Select a Git repository": "选择一个 Git 仓库",
+  "Failed to retrieve Git commits: {0}": "获取提交记录失败： {0}",
+  "Select a commit": "选择一个提交"
 }
