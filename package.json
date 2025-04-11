@@ -44,11 +44,6 @@
         "command": "extension.diffCfgData",
         "title": "%command.diffCfgFile%",
         "category": "FLFH"
-      },
-      {
-        "command": "extension.diffCfgDataWithGit",
-        "title": "%command.diffCfgFileWithGit%",
-        "category": "FLFH"
       }
     ],
     "configuration": [

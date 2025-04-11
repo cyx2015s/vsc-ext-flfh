@@ -10,6 +10,28 @@ interface ChangeData {
 
 type DiffCfgData = Map<string, Map<string, ChangeData>>;
 
+export function stringifyDiffCfgData(diffCfgData: DiffCfgData): string {
+    let result = '';
+    for (const [section, changes] of diffCfgData) {
+        result += `[${section}]\n`;
+        for (const [key, change] of changes) {
+            result += `${key}: ${change.oldValue} -> ${change.newValue}\n`;
+        }
+    }
+    return result;
+}
+
+export function jsonifyDiffCfgData(diffCfgData: DiffCfgData): string {
+    let result: { [key: string]: { [key: string]: ChangeData } } = {};
+    for (const [section, changes] of diffCfgData) {
+        result[section] = {};
+        for (const [key, change] of changes) {
+            result[section][key] = change;
+        }
+    }
+    return JSON.stringify(result, null, 2);
+}
+
 export async function diffCfgFiles(oldCfgFilePath: string | CfgData, newCfgFilePath: string | CfgData): Promise<DiffCfgData> {
     // Read the old and new cfg files and parse them into maps.
     let oldCfgData: CfgData;
@@ -77,7 +99,7 @@ export async function getDiffOldValues(diffCfgData: DiffCfgData): Promise<CfgDat
     return oldCfgData;
 }
 
-export async function diffCfgDataWithGit(cfgFilePath: string, commitOld: string, commitNew: string, gitRepoPath: string): Promise<DiffCfgData> {
+export async function diffCfgFilesWithGit(cfgFilePath: string, commitOld: string, commitNew: string, gitRepoPath: string): Promise<DiffCfgData> {
     // Construct git commands to retrieve file content from the two commits.
     const oldFileCommand = `git --no-pager show ${commitOld}:${cfgFilePath}`;
     const newFileCommand = `git --no-pager show ${commitNew}:${cfgFilePath}`;

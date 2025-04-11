@@ -4,8 +4,7 @@ import * as vscode from 'vscode';
 import { updateCfgFile } from './utils/update-cfg';
 import { quickPickCfgFiles, quickPickGitRepo, quickPickGitCommit } from './utils/quick-pick';
 import { registerLocaleKeyValueSignatureProvider } from "./signatureHelpProvider";
-import { diffCfgDataWithGit } from './utils/diff-cfg';
-import { diffCfgFiles } from './utils/diff-cfg';
+import { diffCfgFilesWithGit, diffCfgFiles, jsonifyDiffCfgData, stringifyDiffCfgData } from './utils/diff-cfg';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -119,7 +118,7 @@ export function activate(context: vscode.ExtensionContext): void {
 				return;
 			}
 
-			const diffResult = await diffCfgDataWithGit(cfgFilePath.fsPath, commitOld, commitNew, gitRepoPath);
+			const diffResult = await diffCfgFilesWithGit(cfgFilePath.fsPath, commitOld, commitNew, gitRepoPath);
 			const formattedDiffResult = JSON.stringify(
 				Object.fromEntries(
 					[...diffResult.entries()].map(([key, innerMap]) => [
