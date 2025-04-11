@@ -13,8 +13,9 @@ type DiffCfgData = Map<string, Map<string, ChangeData>>;
 export function stringifyDiffCfgData(diffCfgData: DiffCfgData): string {
     let result = '';
     for (const [section, changes] of diffCfgData) {
-        result += `[${section}]\n`;
-        for (const [key, change] of changes) {
+        if (section) {
+            result += `[${section}]\n`;
+        } for (const [key, change] of changes) {
             result += `${key}: ${change.oldValue} -> ${change.newValue}\n`;
         }
     }
