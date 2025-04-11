@@ -152,19 +152,20 @@ export function activate(context: vscode.ExtensionContext): void {
 
 		try {
 			const diffResult = await diffCfgFiles(oldCfgFilePath.fsPath, newCfgFilePath.fsPath);
-			const formattedDiffResult = JSON.stringify(
-				Object.fromEntries(
-					[...diffResult.entries()].map(([key, innerMap]) => [
-						key,
-						Object.fromEntries(innerMap.entries())
-					])
-				),
-				null,
-				2
-			); // Convert nested Map to JSON-compatible object and pretty-print
+			// const formattedDiffResult = JSON.stringify(
+			// 	Object.fromEntries(
+			// 		[...diffResult.entries()].map(([key, innerMap]) => [
+			// 			key,
+			// 			Object.fromEntries(innerMap.entries())
+			// 		])
+			// 	),
+			// 	null,
+			// 	2
+			// ); // Convert nested Map to JSON-compatible object and pretty-print
+			const formattedDiffResult = stringifyDiffCfgData(diffResult);
 			const document = await vscode.workspace.openTextDocument({
 				content: formattedDiffResult,
-				language: 'json'
+				language: 'cfg'
 			});
 			await vscode.window.showTextDocument(document);
 		} catch (error: any) {
