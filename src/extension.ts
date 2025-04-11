@@ -98,27 +98,30 @@ export function activate(context: vscode.ExtensionContext): void {
 	context.subscriptions.push(disposableCodeLens);
 
 	const diffWithGitCommand = vscode.commands.registerCommand('extension.diffCfgDataWithGit', async () => {
-		const gitRepoPath = await quickPickGitRepo();
-		if (!gitRepoPath) {
-			return;
-		}
-
-		const cfgFilePath = await quickPickCfgFiles(vscode.l10n.t('Select the .cfg file to diff'));
-
-		const commitOld = await quickPickGitCommit(gitRepoPath);
-		if (!commitOld) {
-			return;
-		}
-
-		const commitNew = await quickPickGitCommit(gitRepoPath);
-		if (!commitNew) {
-			return;
-		}
-
 		try {
-			const diffResult = await diffCfgDataWithGit(cfgFilePath, commitOld, commitNew, gitRepoPath);
+			const gitRepoPath = await quickPickGitRepo();
+			if (!gitRepoPath) {
+				return;
+			}
+
+			const cfgFilePath = await quickPickCfgFiles(vscode.l10n.t('Select the .cfg file to diff'));
+			if (cfgFilePath === undefined) {
+				throw new Error(vscode.l10n.t('No .cfg file selected'));
+			}
+
+			const commitOld = await quickPickGitCommit(gitRepoPath);
+			if (!commitOld) {
+				return;
+			}
+
+			const commitNew = await quickPickGitCommit(gitRepoPath);
+			if (!commitNew) {
+				return;
+			}
+
+			const diffResult = await diffCfgDataWithGit(cfgFilePath.fsPath, commitOld, commitNew, gitRepoPath);
 			const document = await vscode.workspace.openTextDocument({
-				content: String(diffResult)
+				content: String(diffResult),
 				language: 'json'
 			});
 			await vscode.window.showTextDocument(document);
