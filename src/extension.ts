@@ -118,7 +118,7 @@ export function activate(context: vscode.ExtensionContext): void {
 		try {
 			const diffResult = await diffCfgDataWithGit(cfgFilePath, commitOld, commitNew, gitRepoPath);
 			const document = await vscode.workspace.openTextDocument({
-				content: JSON.stringify([...diffResult], null, 2),
+				content: String(diffResult)
 				language: 'json'
 			});
 			await vscode.window.showTextDocument(document);
@@ -141,7 +141,7 @@ export function activate(context: vscode.ExtensionContext): void {
 		try {
 			const diffResult = await diffCfgFiles(oldCfgFilePath.fsPath, newCfgFilePath.fsPath);
 			const document = await vscode.workspace.openTextDocument({
-				content: JSON.stringify([...diffResult], null, 2),
+				content: String(diffResult),
 				language: 'json'
 			});
 			await vscode.window.showTextDocument(document);
