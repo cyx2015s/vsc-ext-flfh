@@ -2,8 +2,10 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { updateCfgFile } from './utils/update-cfg';
-import { quickPickCfgFiles } from './utils/quick-pick';
+import { quickPickCfgFiles, quickPickGitRepo, quickPickGitCommit } from './utils/quick-pick';
 import { registerLocaleKeyValueSignatureProvider } from "./signatureHelpProvider";
+import { diffCfgDataWithGit } from './utils/diff-cfg';
+import { diffCfgFiles } from './utils/diff-cfg';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -11,13 +13,13 @@ import { registerLocaleKeyValueSignatureProvider } from "./signatureHelpProvider
 export function activate(context: vscode.ExtensionContext): void {
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('"factorio-locale-format-helper" is now active!');
+	console.log('"FLFH" is now active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 
-	let disposableCommand = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSource', async () => {
+	const updateKeysCommand = vscode.commands.registerCommand('extension.updateKeysFromSource', async () => {
 		try {
 			const sourceFile = await quickPickCfgFiles(vscode.l10n.t("Select the source .cfg file (Usually the one under locale/en/)"));
 			if (!sourceFile) {
@@ -44,9 +46,9 @@ export function activate(context: vscode.ExtensionContext): void {
 		}
 	});
 
-	context.subscriptions.push(disposableCommand);
+	context.subscriptions.push(updateKeysCommand);
 
-	disposableCommand = vscode.commands.registerCommand('factorio-locale-format-helper.updateKeysFromSourceOnEditor', async () => {
+	const updateOnEditorCommand = vscode.commands.registerCommand('extension.updateKeysFromSourceOnEditor', async () => {
 		try {
 			const activeEditor = vscode.window.activeTextEditor;
 			if (!activeEditor || !activeEditor.document.fileName.endsWith(".cfg")) {
@@ -76,15 +78,15 @@ export function activate(context: vscode.ExtensionContext): void {
 	});
 
 
-	context.subscriptions.push(disposableCommand);
+	context.subscriptions.push(updateOnEditorCommand);
 
-	let disposableCodeLens = vscode.languages.registerCodeLensProvider({ scheme: 'file', pattern: '**/*.cfg' }, {
+	const disposableCodeLens = vscode.languages.registerCodeLensProvider({ scheme: 'file', pattern: '**/*.cfg' }, {
 		provideCodeLenses(document, token) {
 			return [
 				new vscode.CodeLens(new vscode.Range(0, 0, 0, 0), {
 					title: vscode.l10n.t("$(sync) FLFH: Update Keys"),
 					tooltip: vscode.l10n.t("Update keys from source locale cfg file"),
-					command: "factorio-locale-format-helper.updateKeysFromSourceOnEditor"
+					command: "extension.updateKeysFromSourceOnEditor"
 				})
 			];
 		},
@@ -95,29 +97,60 @@ export function activate(context: vscode.ExtensionContext): void {
 
 	context.subscriptions.push(disposableCodeLens);
 
-	// The status bar item is deprecated. Now uses codelens button instead.
-	// let disposableEditor = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+	const diffWithGitCommand = vscode.commands.registerCommand('extension.diffCfgDataWithGit', async () => {
+		const gitRepoPath = await quickPickGitRepo();
+		if (!gitRepoPath) {
+			return;
+		}
 
-	// vscode.window.onDidChangeActiveTextEditor((editor) => {
-	// 	if (editor && editor.document.fileName.endsWith(".cfg")) {
-	// 		disposableEditor.show();
-	// 	} else {
-	// 		disposableEditor.hide();
-	// 	}
-	// });
+		const cfgFilePath = await quickPickCfgFiles(vscode.l10n.t('Select the .cfg file to diff'));
 
+		const commitOld = await quickPickGitCommit(gitRepoPath);
+		if (!commitOld) {
+			return;
+		}
 
-	// if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document.fileName.endsWith(".cfg")) {
-	// 	disposableEditor.show();
-	// } else {
-	// 	disposableEditor.hide();
-	// }
-	// disposableEditor.text = "$(sync) FLFH: Update Keys";
-	// disposableEditor.tooltip = "Update keys from source locale cfg file";
-	// disposableEditor.command = "factorio-locale-format-helper.updateKeysFromSourceOnEditor";
-	// disposableEditor.show();
+		const commitNew = await quickPickGitCommit(gitRepoPath);
+		if (!commitNew) {
+			return;
+		}
 
-	// context.subscriptions.push(disposableEditor);
+		try {
+			const diffResult = await diffCfgDataWithGit(cfgFilePath, commitOld, commitNew, gitRepoPath);
+			const document = await vscode.workspace.openTextDocument({
+				content: JSON.stringify([...diffResult], null, 2),
+				language: 'json'
+			});
+			await vscode.window.showTextDocument(document);
+		} catch (error: any) {
+			vscode.window.showErrorMessage('Error diffing config data with Git: ' + error.message);
+		}
+	});
+
+	const diffCommand = vscode.commands.registerCommand('extension.diffCfgData', async () => {
+		const oldCfgFilePath = await quickPickCfgFiles(vscode.l10n.t('Select the old config file'));
+		if (!oldCfgFilePath) {
+			return;
+		}
+
+		const newCfgFilePath = await quickPickCfgFiles(vscode.l10n.t('Select the new config file'));
+		if (!newCfgFilePath) {
+			return;
+		}
+
+		try {
+			const diffResult = await diffCfgFiles(oldCfgFilePath.fsPath, newCfgFilePath.fsPath);
+			const document = await vscode.workspace.openTextDocument({
+				content: JSON.stringify([...diffResult], null, 2),
+				language: 'json'
+			});
+			await vscode.window.showTextDocument(document);
+		} catch (error: any) {
+			vscode.window.showErrorMessage('Error diffing config data: ' + error.message);
+		}
+	});
+
+	context.subscriptions.push(diffWithGitCommand, diffCommand);
 
 	registerLocaleKeyValueSignatureProvider(context);
 }

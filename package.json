@@ -31,13 +31,23 @@
   "contributes": {
     "commands": [
       {
-        "command": "factorio-locale-format-helper.updateKeysFromSource",
+        "command": "extension.updateKeysFromSource",
         "title": "%command.updateKeysFromSource%",
         "category": "FLFH"
       },
       {
-        "command": "factorio-locale-format-helper.updateKeysFromSourceOnEditor",
+        "command": "extension.updateKeysFromSourceOnEditor",
         "title": "%command.updateKeysFromSourceOnEditor%",
+        "category": "FLFH"
+      },
+      {
+        "command": "extension.diffCfgData",
+        "title": "%command.diffCfgFile%",
+        "category": "FLFH"
+      },
+      {
+        "command": "extension.diffCfgDataWithGit",
+        "title": "%command.diffCfgFileWithGit%",
         "category": "FLFH"
       }
     ],

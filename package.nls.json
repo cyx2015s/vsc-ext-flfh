@@ -1,8 +1,10 @@
 {
-    "extension.displayName": "Factorio Locale Format Helper",
-    "extension.description": "A helper tool for managing Factorio locale files.",
-    "command.updateKeysFromSource": "Update Keys from Source",
-    "command.updateKeysFromSourceOnEditor": "Update Keys from Source (Editor)",
-    "settings.title": "FLFH Settings",
-    "settings.discardCommentsInTarget": "Discard comments in target file, when arranging the key-value pairs in the target file according to the source file."
+  "extension.displayName": "Factorio Locale Format Helper",
+  "extension.description": "A helper tool for managing Factorio locale files.",
+  "command.updateKeysFromSource": "Update Keys from Source",
+  "command.updateKeysFromSourceOnEditor": "Update Keys from Source (Editor)",
+  "command.diffCfgFile": "Diff Cfg File",
+  "command.diffCfgFileWithGit": "Diff Cfg File with Git",
+  "settings.title": "FLFH Settings",
+  "settings.discardCommentsInTarget": "Discard comments in target file, when arranging the key-value pairs in the target file according to the source file."
 }

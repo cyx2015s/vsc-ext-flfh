@@ -3,6 +3,8 @@
   "extension.description": "一个用于管理 Factorio 本地化文件的辅助工具。",
   "command.updateKeysFromSource": "从源文件更新键值",
   "command.updateKeysFromSourceOnEditor": "从源文件更新键值（编辑器）",
+  "command.diffCfgFile": "比较翻译文件",
+  "command.diffCfgFileWithGit": "使用 Git 比较翻译文件",
   "settings.title": "FLFH 设置",
   "settings.discardCommentsInTarget": "根据源文件排布目标文件的键值对顺序时，丢弃目标文件中的注释。"
 }
