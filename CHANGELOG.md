@@ -10,7 +10,7 @@
 
 ### Added
 
-Compare 2 diff files, and the changed key-value pairs will be written to a editing file.
+- Compare 2 diff files, and the changed key-value pairs will be written to a editing file. [THIS IS A WORKING FEATURE, NOT FINAL VERSION]
 
 ## [0.4.2] - 2025-04-07
 
