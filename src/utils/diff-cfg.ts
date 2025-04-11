@@ -1,4 +1,7 @@
 import { parseCfgFileData, CfgData } from "./parse-cfg";
+import { exec } from 'child_process';
+import { promisify } from 'util';
+const execAsync = promisify(exec);
 
 interface ChangeData {
     oldValue: string | undefined;
@@ -7,10 +10,23 @@ interface ChangeData {
 
 type DiffCfgData = Map<string, Map<string, ChangeData>>;
 
-export async function diffCfgFiles(oldCfgFilePath: string, newCfgFilePath: string): Promise<DiffCfgData> {
+export async function diffCfgFiles(oldCfgFilePath: string | CfgData, newCfgFilePath: string | CfgData): Promise<DiffCfgData> {
     // Read the old and new cfg files and parse them into maps.
-    let oldCfgData = await parseCfgFileData(oldCfgFilePath);
-    let newCfgData = await parseCfgFileData(newCfgFilePath);
+    let oldCfgData: CfgData;
+    let newCfgData: CfgData;
+    if (typeof oldCfgFilePath === 'string') {
+        oldCfgData = await parseCfgFileData(oldCfgFilePath);
+    } else {
+        oldCfgData = oldCfgFilePath as CfgData;
+    }
+
+    if (typeof newCfgFilePath === 'string') {
+        newCfgData = await parseCfgFileData(newCfgFilePath);
+    }
+    else {
+        newCfgData = newCfgFilePath as CfgData;
+    }
+
     // Compare the keys in both maps,
     let diff: Map<string, Map<string, ChangeData>> = new Map<string, Map<string, ChangeData>>([["", new Map()]]);
     let allSections = [...oldCfgData.keys(), ...newCfgData.keys()];
@@ -59,4 +75,28 @@ export async function getDiffOldValues(diffCfgData: DiffCfgData): Promise<CfgDat
         oldCfgData.set(section, oldSectionData);
     }
     return oldCfgData;
+}
+
+export async function diffCfgDataWithGit(cfgFilePath: string, commitOld: string, commitNew: string, gitRepoPath: string): Promise<DiffCfgData> {
+    // Construct git commands to retrieve file content from the two commits.
+    const oldFileCommand = `git --no-pager show ${commitOld}:${cfgFilePath}`;
+    const newFileCommand = `git --no-pager show ${commitNew}:${cfgFilePath}`;
+
+    try {
+        // Execute git commands to get file content.
+        const { stdout: oldFileContent } = await execAsync(oldFileCommand, { cwd: gitRepoPath });
+        const { stdout: newFileContent } = await execAsync(newFileCommand, { cwd: gitRepoPath });
+
+        // Parse the file content into CfgData.
+        const oldCfgData = await parseCfgFileData(oldFileContent);
+        const newCfgData = await parseCfgFileData(newFileContent);
+
+        // Use the existing diff logic to compare the two CfgData objects.
+        const diff = await diffCfgFiles(oldCfgData, newCfgData);
+
+        return diff;
+    } catch (error) {
+        console.error('Error while diffing cfg data with git:', error);
+        throw error;
+    }
 }
