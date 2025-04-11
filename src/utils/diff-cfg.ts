@@ -17,7 +17,11 @@ export function stringifyDiffCfgData(diffCfgData: DiffCfgData): string {
             result += `[${section}]\n`;
         } for (const [key, change] of changes) {
             // ignore oldValue.
-            result += `${key}=${change.newValue}\n`;
+            if (change.newValue === undefined) {
+                result += `;${key}=${change.oldValue}\n`;
+            } else {
+                result += `${key}=${change.newValue}\n`;
+            }
         }
     }
     return result;

@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+## [0.4.3] - 2025-04-11
+
+### Added
+
+Compare 2 diff files, and the changed key-value pairs will be written to a editing file.
+
 ## [0.4.2] - 2025-04-07
 
 ### Locale
