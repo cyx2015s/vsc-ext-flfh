@@ -1,11 +1,13 @@
 import { promises as fs } from 'fs';
 
+export type CfgData = Map<string, Map<string, string>>;
+
 /**
  * Parses a cfg file and returns its data as a Map.
  * @param filePath - The path to the cfg file.
  * @returns A promise that resolves to a Map representing the parsed data.
  */
-export const parseCfgFileData = async (filePath: string): Promise<Map<string, Map<string, string>>> => {
+export const parseCfgFileData = async (filePath: string): Promise<CfgData> => {
     const content = await fs.readFile(filePath, 'utf8');
     const result = new Map<string, Map<string, string>>([["", new Map()]]);
 
