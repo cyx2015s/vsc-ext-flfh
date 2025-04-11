@@ -120,8 +120,18 @@ export function activate(context: vscode.ExtensionContext): void {
 			}
 
 			const diffResult = await diffCfgDataWithGit(cfgFilePath.fsPath, commitOld, commitNew, gitRepoPath);
+			const formattedDiffResult = JSON.stringify(
+				Object.fromEntries(
+					[...diffResult.entries()].map(([key, innerMap]) => [
+						key,
+						Object.fromEntries(innerMap.entries())
+					])
+				),
+				null,
+				2
+			); // Convert nested Map to JSON-compatible object and pretty-print
 			const document = await vscode.workspace.openTextDocument({
-				content: String(diffResult),
+				content: formattedDiffResult,
 				language: 'json'
 			});
 			await vscode.window.showTextDocument(document);
@@ -143,8 +153,18 @@ export function activate(context: vscode.ExtensionContext): void {
 
 		try {
 			const diffResult = await diffCfgFiles(oldCfgFilePath.fsPath, newCfgFilePath.fsPath);
+			const formattedDiffResult = JSON.stringify(
+				Object.fromEntries(
+					[...diffResult.entries()].map(([key, innerMap]) => [
+						key,
+						Object.fromEntries(innerMap.entries())
+					])
+				),
+				null,
+				2
+			); // Convert nested Map to JSON-compatible object and pretty-print
 			const document = await vscode.workspace.openTextDocument({
-				content: String(diffResult),
+				content: formattedDiffResult,
 				language: 'json'
 			});
 			await vscode.window.showTextDocument(document);
